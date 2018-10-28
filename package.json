@@ -1,0 +1,12 @@
+{
+  "name": "none23-awesome-wm-config",
+  "privare": true,
+  "version": "1.0.0",
+  "description": "'My AwesomeWM config'",
+  "author": "none23 <n.anisimov.23@gmail.com> (https://github.com/none23)",
+  "license": "MIT",
+  "devDependencies": {
+    "@prettier/plugin-lua": "^0.0.1",
+    "prettier": "^1.14.3"
+  }
+}

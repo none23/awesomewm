@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+local BAT=(/sys/class/power_supply/BAT*)
+local AC=(/sys/class/power_supply/A*)
+
+local PERC=$(cat $BAT/capacity)
+
+if [ "$(cat $AC/online)" -eq "1" ]; then
+    echo "🗲"
+elif [ "$PERC" -gt "75" ]; then
+    echo "#"
+elif [ "$PERC" -gt "55" ]; then
+    echo "="
+elif [ "$PERC" -gt "30" ]; then
+    echo "_"
+else
+    echo ""
+fi
+
