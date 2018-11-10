@@ -18,10 +18,10 @@ local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- when client with a matching name is opened:
 require("awful.hotkeys_popup.keys")
 
-local Super = "Mod4"
-local Hyper = "Mod3"
-local Shift = "Shift"
-local Cntrl = "Control"
+Super = "Mod4"
+Hyper = "Mod3"
+Shift = "Shift"
+Ctrl = "Control"
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -566,7 +566,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key(
-		{ Super, Cntrl },
+		{ Super, Ctrl },
 		"w",
 		function()
 			awful.client.cycle({ clockwise = true })
@@ -591,7 +591,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key(
-		{ Super, Cntrl },
+		{ Super, Ctrl },
 		"a",
 		function()
 			local c = awful.client.restore()
@@ -606,24 +606,24 @@ globalkeys = awful.util.table.join(
 			group = "client"
 		}
 	),
-	awful.key({ Super }, "Left", awful.tag.viewprev, {
+	awful.key({ Super, Ctrl }, "Left", awful.tag.viewprev, {
 		description = "view previous",
 		group = "tag"
 	}),
-	awful.key({ Super }, "Right", awful.tag.viewnext, {
+	awful.key({ Super, Ctrl }, "Right", awful.tag.viewnext, {
 		description = "view next",
 		group = "tag"
 	}),
-	awful.key({ Super, Cntrl }, "Down", function()
+	awful.key({ Super, Ctrl }, "Down", function()
 		awful.tag.incnmaster(-1)
 	end),
-	awful.key({ Super, Cntrl }, "Up", function()
+	awful.key({ Super, Ctrl }, "Up", function()
 		awful.tag.incnmaster(1)
 	end),
-	awful.key({ Super, Cntrl }, "Right", function()
+	awful.key({ Super }, "Right", function()
 		awful.tag.incmwfact(0.01)
 	end),
-	awful.key({ Super, Cntrl }, "Left", function()
+	awful.key({ Super }, "Left", function()
 		awful.tag.incmwfact(-0.01)
 	end),
 	awful.key(
@@ -662,11 +662,11 @@ globalkeys = awful.util.table.join(
 	awful.key({}, "XF86AudioMute", function()
 		awful.spawn("amixer -q set Master playback toggle")
 	end),
-	awful.key({ Super, Cntrl }, "r", awesome.restart, {
+	awful.key({ Super, Ctrl }, "r", awesome.restart, {
 		description = "reload awesome",
 		group = "awesome"
 	}),
-	awful.key({ Super, Cntrl }, "q", awesome.quit, {
+	awful.key({ Super, Ctrl }, "q", awesome.quit, {
 		description = "quit awesome",
 		group = "awesome"
 	}),
@@ -720,7 +720,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key(
-		{ Super, Cntrl },
+		{ Super, Ctrl },
 		"k",
 		function()
 			awful.tag.incnmaster(1, nil, true)
@@ -731,7 +731,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key(
-		{ Super, Cntrl },
+		{ Super, Ctrl },
 		"j",
 		function()
 			awful.tag.incnmaster(-1, nil, true)
@@ -742,7 +742,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key(
-		{ Super, Cntrl },
+		{ Super, Ctrl },
 		"h",
 		function()
 			awful.tag.incncol(1, nil, true)
@@ -753,7 +753,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key(
-		{ Super, Cntrl },
+		{ Super, Ctrl },
 		"l",
 		function()
 			awful.tag.incncol(-1, nil, true)
@@ -777,19 +777,19 @@ globalkeys = awful.util.table.join(
 	awful.key({ Hyper }, "1", function()
 		awful.spawn("chromium")
 	end),
-	awful.key({ Hyper, Cntrl }, "1", function()
+	awful.key({ Hyper, Ctrl }, "1", function()
 		awful.spawn("tor-browser-en")
 	end),
 	awful.key({ Hyper }, "2", function()
 		awful.spawn("firefox")
 	end),
-	awful.key({ Hyper, Cntrl }, "2", function()
+	awful.key({ Hyper, Ctrl }, "2", function()
 		awful.spawn("chromium --kiosk")
 	end),
 	awful.key({ Hyper }, "3", function()
 		awful.spawn("atom")
 	end),
-	awful.key({ Hyper, Cntrl }, "3", function()
+	awful.key({ Hyper, Ctrl }, "3", function()
 		awful.spawn("blender")
 	end),
 	awful.key({ Hyper }, "4", function()
@@ -801,13 +801,13 @@ globalkeys = awful.util.table.join(
 	awful.key({ Hyper }, "8", function()
 		awful.spawn("transset-df 1")
 	end),
-	awful.key({ Hyper, Cntrl }, "8", function()
+	awful.key({ Hyper, Ctrl }, "8", function()
 		awful.spawn("transset-df .8")
 	end),
 	awful.key({ Hyper }, "9", function()
 		awful.spawn("transset-df .65")
 	end),
-	awful.key({ Hyper, Cntrl }, "9", function()
+	awful.key({ Hyper, Ctrl }, "9", function()
 		awful.spawn("transset-df .4")
 	end),
 	awful.key(
@@ -824,47 +824,10 @@ globalkeys = awful.util.table.join(
 )
 
 clientkeys = gears.table.join(
-	awful.key({ Super, Shift }, "s", function(c)
-		local next_screen = awful.screen.focused().index + 1
-		if next_screen > screen.count() then
-			next_screen = 1
-		end
-		awful.client.move_to_screen(c, next_screen)
-	end),
-
-	awful.key(
-		{ Super },
-		"Escape",
-		function(c)
-			c:kill()
-		end,
-		{
-			description = "close",
-			group = "client"
-		}
-	),
-	awful.key(
-		{ Super },
-		"slash",
-		function(c)
-			c:swap(awful.client.getmaster())
-		end,
-		{
-			description = "move to master",
-			group = "client"
-		}
-	),
-	awful.key(
-		{ Super },
-		"n",
-		function(c)
-			c.minimized = true
-		end,
-		{
-			description = "minimize",
-			group = "client"
-		}
-	),
+	awful.key({ Super, Shift }, "s", function(c) c:move_to_screen() end, { description = "move to screen", group = "client" }),
+	awful.key({ Super }, "Escape", function(c) c:kill() end, { description = "close", group = "client" }),
+	awful.key({ Super }, "slash", function(c) c:swap(awful.client.getmaster()) end, { description = "move to master", group = "client" }),
+	awful.key( { Super }, "n", function(c) c.minimized = true end, { description = "minimize", group = "client" }),
 	--  awful.key({ Super }, "y",     function (c) c.sticky = not c.sticky                                                                    end ),
 	awful.key({ Super }, "g", awful.client.floating.toggle, {
 		description = "toggle floating",
@@ -944,7 +907,7 @@ for i = 1, 9 do
 	globalkeys = awful.util.table.join(
 		globalkeys,
 		awful.key(
-			{ Super, Cntrl },
+			{ Super, Ctrl },
 			"#" .. i + 9,
 			function()
 				local focused_screen = awful.screen.focused()
@@ -994,7 +957,7 @@ for i = 1, 9 do
 		),
 
 		awful.key(
-			{ Super, Shift, Cntrl },
+			{ Super, Shift, Ctrl },
 			"#" .. i + 9,
 			function()
 				local all_clients =
@@ -1041,125 +1004,82 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
-awful.rules.rules = { {
-	rule = {},
-	callback = awful.client.setslave
-}, {
-	rule = {},
-	properties = {
-		border_width = beautiful.border_width,
-		border_color = beautiful.border_normal,
-		focus = awful.client.focus.filter,
-		raise = true,
-		keys = clientkeys,
-		buttons = clientbuttons,
-		titlebars_enabled = false,
-		screen = awful.screen.preferred,
-		placement = awful.placement.no_overlap + awful.placement.no_offscreen
-	}
-}, {
-	rule_any = {
-		class = { "Chromium" }
-	},
-	properties = {
-		floating = false,
-		maximized_horizontal = false,
-		maximized_vertical = false
-	}
-}, {
-	rule_any = {
-		instance = { "copyq", "pinentry" },
-		class = {
-			"Arandr",
-			"Blender",
-			"Gpick",
-			"feh",
-			"Kruler",
-			"qt5ct",
-			"Octave",
-			"Sxiv",
-			"MessageWin",
-			"Wpa_gui",
-			"pinentry",
-			"veromix",
-			"xtightvncviewer",
-			"Popup"
-		},
-		name = {
-			"Event Tester",
-			"Page(s) Unresponsive",
-			"Firefox Preferences",
-			"Adblock Plus Filter Preferences",
-			"Task Manager - Chromium"
-		},
-		role = { "AlarmWindow", "pop-up" }
-	},
-	properties = { floating = true }
-}, {
-	rule_any = {
-		class = { "konsole", "URxvt", "Zathura" }
-	},
-	properties = { opacity = 1 }
-}, {
-	rule_any = {
-		class = { "URxvt", "XTerm" }
-	},
-	properties = { size_hints_honor = false }
-}, {
-	rule = { class = "Arandr" },
-	properties = {
-		maximized_horizontal = true,
-		maximized_vertical = true
-	}
-}, {
-	rule = { class = "Blender" },
-	properties = {
-		screen = 1,
-		tag = "3"
-	}
-}, {
-	rule = { class = "Atom" },
-	properties = {
-		screen = 1,
-		tag = "3"
-	}
-}, {
-	rule = { class = "Inkscape" },
-	properties = {
-		screen = 1,
-		tag = "4"
-	}
-}, {
-	rule = { class = "Gimp" },
-	properties = {
-		screen = 1,
-		tag = "5"
-	}
-}, {
-	rule = { class = "Tor Browser" },
-	properties = {
-		screen = 1,
-		tag = "6"
-	}
-}, {
-	rule = { class = "Arandr" },
-	properties = {
-		screen = 1,
-		tag = "8"
-	}
-}, {
-	rule = { class = "Firefox" },
-	properties = {
-		screen = 1,
-		tag = "9"
-	}
-}, {
-	rule = { class = "TelegramDesktop" },
-	properties = {
-		screen = 1,
-		tag = "9"
-	}
-} }
+awful.rules.rules = {
+  {
+    rule = {},
+    properties = {
+      border_width = beautiful.border_width,
+      border_color = beautiful.border_normal,
+      focus = awful.client.focus.filter,
+      raise = true,
+      keys = clientkeys,
+      buttons = clientbuttons,
+      titlebars_enabled = false,
+      screen = awful.screen.preferred,
+      placement = awful.placement.no_overlap + awful.placement.no_offscreen
+    },
+  },
+
+  {
+    rule_any = { class = { "Chromium" } },
+    properties = {
+      floating = false,
+      maximized_horizontal = false,
+      maximized_vertical = false,
+    },
+  },
+
+  {
+    rule_any = {
+      instance = {
+        "copyq",
+        "pinentry",
+      },
+      class = {
+        "Arandr",
+        "Blender",
+        "Gpick",
+        "feh",
+        "Kruler",
+        "qt5ct",
+        "Octave",
+        "Sxiv",
+        "MessageWin",
+        "Wpa_gui",
+        "pinentry",
+        "veromix",
+        "xtightvncviewer",
+        "Popup",
+      },
+      name = {
+        "Event Tester",
+        "Page(s) Unresponsive",
+        "Firefox Preferences",
+        "Adblock Plus Filter Preferences",
+        "Task Manager - Chromium",
+      },
+      role = {
+        "AlarmWindow",
+        "pop-up",
+      }
+    },
+    properties = { floating = true },
+  },
+
+  {
+    rule_any = { class = { "URxvt", "XTerm" } },
+    properties = { size_hints_honor = false },
+  },
+
+  { rule = { class = "Blender" },         properties = { screen = 1, tag = "3" } },
+  { rule = { class = "Atom" },            properties = { screen = 1, tag = "3" } },
+  { rule = { class = "Inkscape" },        properties = { screen = 1, tag = "4" } },
+  { rule = { class = "Gimp" },            properties = { screen = 1, tag = "5" } },
+  { rule = { class = "Tor Browser" },     properties = { screen = 1, tag = "6" } },
+  { rule = { class = "Arandr" },          properties = { screen = 1, tag = "8" } },
+  { rule = { class = "Firefox" },         properties = { screen = 1, tag = "9" } },
+  { rule = { class = "TelegramDesktop" }, properties = { screen = 1, tag = "9" } },
+}
 
 -- {{{ Signals
 client.connect_signal("manage", function(c)
