@@ -68,7 +68,8 @@ local function run_once(cmd)
 	)
 end
 
-run_once("konsole -e zsh")
+-- run_once("konsole -e zsh")
+run_once("alacritty")
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts =
@@ -79,10 +80,6 @@ awful.layout.layouts =
 		awful.layout.suit.fair
 	}
 
--- Keyboard map indicator and switcher
--- mykeyboardlayout = awful.widget.keyboardlayout()
-
--- {{{ Wibar
 -- Create a textclock widget
 mytextclock = wibox.widget.textclock()
 
@@ -182,17 +179,6 @@ local arrow_1R0 = wrap_arrow(beautiful.arrow_1R0)
 -- }}}
 
 awful.screen.connect_for_each_screen(function(s)
--- mykeyboardlayout,
-
--- load
-
--- volume
-
--- battery
-
--- date
-
--- time
 	set_wallpaper(s)
 
 	awful.tag(
@@ -231,26 +217,19 @@ awful.screen.connect_for_each_screen(function(s)
 				s.tags[t] = {
 					master_count = 1,
 					column_count = 1,
-					master_width_factor = 0.625
+					master_width_factor = 0.85
 				}
 			else
 				s.tags[t].master_count = 1
 				s.tags[t].column_count = 1
-				s.tags[t].master_width_factor = 0.625
+				s.tags[t].master_width_factor = 0.85
 			end
 		end
 	end
 
 	s.mypromptbox = awful.widget.prompt()
 
-	s.promptbox_wrap =
-		wrap_widget(
-			s.mypromptbox,
-			beautiful.bg_normal,
-			beautiful.fg_normal,
-			4,
-			1
-		)
+	s.promptbox_wrap = wrap_widget(s.mypromptbox, beautiful.bg_normal, beautiful.fg_normal, 4, 1)
 
 	s.mytaglist = awful.widget.taglist{
 		screen = s,
@@ -444,7 +423,7 @@ awful.screen.connect_for_each_screen(function(s)
 				fg = beautiful.black,
 				widget = wibox.container.background
 			}
-		}
+		},
 	}
 end)
 -- }}}
@@ -767,6 +746,19 @@ globalkeys = awful.util.table.join(
 		{ Super },
 		"Return",
 		function()
+			-- awful.spawn("konsole -e zsh")
+			awful.spawn("alacritty")
+		end,
+		{
+			description = "open a terminal",
+			group = "launcher"
+		}
+	),
+	awful.key(
+		{ Super },
+		"KP_Enter",
+		function()
+			-- awful.spawn("alacritty")
 			awful.spawn("konsole -e zsh")
 		end,
 		{
@@ -1036,7 +1028,6 @@ awful.rules.rules = {
         "pinentry",
       },
       class = {
-        "Arandr",
         "Blender",
         "Gpick",
         "feh",
