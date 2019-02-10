@@ -1054,7 +1054,19 @@ awful.rules.rules = {
         "pop-up",
       }
     },
-    properties = { floating = true },
+    properties = {
+      floating = true,
+    },
+  },
+
+  {
+    rule = {
+      name = "Picture in picture"
+    },
+    properties = {
+      floating = true,
+      ontop = true,
+    },
   },
 
   {
