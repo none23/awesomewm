@@ -1,4 +1,0 @@
-#!/bin/zsh
-
-local RESPONSE=$(curl -s "https://httpbin.org/ip" | jq -r ".origin")
-[[ -n "$RESPONSE" ]] && echo "$RESPONSE"

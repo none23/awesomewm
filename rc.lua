@@ -280,29 +280,6 @@ awful.screen.connect_for_each_screen(function(s)
 				right = 2,
 				widget = wibox.container.margin
 			},
-			{
-				{
-					text = ":",
-					widget = wibox.widget.textbox
-				},
-				bg = beautiful.bg_normal,
-				fg = beautiful.primary_muted,
-				widget = wibox.container.background
-			},
-			{
-				{
-					awful.widget.watch(
-						"zsh -c " .. scripts_path .. "ipext",
-						10
-					),
-					bg = beautiful.bg_normal,
-					fg = beautiful.primary_muted,
-					widget = wibox.container.background
-				},
-				left = 2,
-				right = 2,
-				widget = wibox.container.margin
-			},
 			arrow_0L1,
 			{
 				{
