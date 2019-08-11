@@ -73,8 +73,8 @@ theme.wallpaper           = theme.confdir .. "/wallpapers/land.jpg"
 -- theme.bg_normal = nil
 -- theme.fg_normal = nil
 -- theme.bg_systray = nil
-theme.font                = "xos4 Terminus 8"
-theme.font_small          = "xos4 Terminus 6"
+theme.font        = "Inconsolata 9"
+theme.font_small  = "Ubuntu Mono 9"
 
 -- arcchart
 -- theme.arcchart_border_color = nil
@@ -192,7 +192,7 @@ theme.menu_border_width   = 0
 -- theme.menubar_bg_normal = nil
 
 -- notification
--- theme.notification_font = nil
+theme.notification_font = theme.font
 -- theme.notification_bg = nil
 -- theme.notification_fg = nil
 -- theme.notification_border_width = nil
@@ -226,7 +226,7 @@ theme.menu_border_width   = 0
 -- prompt
 -- theme.prompt_fg_cursor = nil
 -- theme.prompt_bg_cursor = nil
--- theme.prompt_font = nil
+theme.prompt_font = theme.font
 -- theme.prompt_fg = nil
 -- theme.prompt_bg = nil
 
@@ -288,7 +288,7 @@ theme.taglist_squares_unsel      = theme.confdir .. "/icons/square_b.svg"
 -- theme.taglist_squares_unsel_empty = nil
 -- theme.taglist_squares_resize = nil
 -- theme.taglist_disable_icon = nil
--- theme.taglist_font = nil
+theme.taglist_font = theme.font
 theme.taglist_spacing     = 2
 -- theme.taglist_shape = nil
 -- theme.taglist_shape_border_width = nil
@@ -322,7 +322,7 @@ theme.taglist_spacing     = 2
 theme.tasklist_disable_icon = true
 -- theme.tasklist_disable_task_name = nil
 -- theme.tasklist_plain_task_name = nil
-theme.tasklist_font       = "xos4 Terminus 8"
+theme.tasklist_font       = theme.font_small
 theme.tasklist_align = "center"
 -- theme.tasklist_font_focus = nil
 -- theme.tasklist_font_minimized = nil

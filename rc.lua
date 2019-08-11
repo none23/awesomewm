@@ -574,7 +574,7 @@ globalkeys = awful.util.table.join(
 		awful.tag.incnmaster(-1)
 	end),
 	awful.key({ Super, Ctrl }, "Up", function()
-		awful.tag.incnmaster(1)
+		awful.tag.incnmaster(2)
 	end),
 	awful.key({ Super }, "Right", function()
 		awful.tag.incmwfact(0.01)
