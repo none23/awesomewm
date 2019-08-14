@@ -24,4 +24,4 @@ SYS=$(change 3)
 IDLE=$(change 4)
 IOW=$(change 5)
 
-echo $(( ( $USR + $SYS + $IOW ) * 100 / ( $USR + $SYS + $IOW + $IDLE )))
+echo "/ $(( ( $USR + $SYS + $IOW ) * 100 / ( $USR + $SYS + $IOW + $IDLE )))"

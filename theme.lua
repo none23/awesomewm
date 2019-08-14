@@ -1,5 +1,9 @@
 local gears     = require("gears")
 
+local function octogon(cr, width, height)
+  gears.shape.octogon(cr, width, height, 5)
+end
+
 local theme = {}
 
 theme.confdir             = os.getenv("HOME") .. "/.config/awesome"
@@ -8,40 +12,23 @@ theme.primary          = "#de5e1e"
 theme.primary2         = "#ff6000"
 theme.secondary        = "#1e9dde"
 theme.danger           = "#de1e1e"
-theme.black            = "#000000"
-theme.midgray_0        = "#141414"
-theme.midgray_1        = "#232323"
-theme.midgray_2        = "#060606"
+theme.black            = "#131514"
+theme.midgray_2        = "#171819"
+theme.midgray_0        = "#252627"
+theme.midgray_1        = "#373938"
 theme.tranasparent     = "#00000000"
 theme.fg_muted         = "#99999977"
+theme.opaque_black     = "#07070799"
 theme.primary_muted    = "#de5e1e88"
 theme.popup_fg         = "#12121288"
 theme.popup_bg         = theme.primary
 theme.popup_danger_bg  = "#de1e1e88"
 theme.popup_danger_fg  = theme.bg
-theme.arrow_0L0  = theme.confdir .. "/icons/black_to_black.svg"
-theme.arrow_0L1  = theme.confdir .. "/icons/black_to_midgray0.svg"
-theme.arrow_0L2  = theme.confdir .. "/icons/black_to_midgray1.svg"
-theme.arrow_0L3  = theme.confdir .. "/icons/black_to_primary.svg"
-theme.arrow_0L4  = theme.confdir .. "/icons/black_to_midgray2.svg"
-theme.arrow_1L0  = theme.confdir .. "/icons/midgray0_to_black.svg"
-theme.arrow_1L2  = theme.confdir .. "/icons/midgray0_to_midgray1.svg"
-theme.arrow_1L3  = theme.confdir .. "/icons/midgray0_to_primary.svg"
-theme.arrow_1L4  = theme.confdir .. "/icons/midgray0_to_midgray2.svg"
-theme.arrow_2L0  = theme.confdir .. "/icons/midgray1_to_black.svg"
-theme.arrow_2L1  = theme.confdir .. "/icons/midgray1_to_midgray0.svg"
-theme.arrow_2L3  = theme.confdir .. "/icons/midgray1_to_primary.svg"
-theme.arrow_2L4  = theme.confdir .. "/icons/midgray1_to_midgray2.svg"
-theme.arrow_4L1  = theme.confdir .. "/icons/midgray2_to_midgray0.svg"
-theme.arrow_0R0  = theme.confdir .. "/icons/black_to_black_right.svg"
-theme.arrow_1R0  = theme.confdir .. "/icons/midgray0_to_black_right.svg"
-theme.arrow_1R2  = theme.confdir .. "/icons/midgray0_to_midgray1_right.svg"
-theme.arrow_2R0  = theme.confdir .. "/icons/midgray1_to_black_right.svg"
 
 -- Default variables
 -- theme.border_marked = nil
 theme.useless_gap         = 0
-theme.bg_normal        = "#000000"
+theme.bg_normal        = "#070707"
 theme.bg_focus         = theme.bg_normal
 theme.bg_urgent        = theme.primary
 theme.menu_bg_normal   = theme.bg_normal
@@ -59,21 +46,23 @@ theme.menu_fg_normal   = theme.fg_normal
 theme.menu_fg_focus    = theme.primary
 theme.fg_minimize      = theme.fg_normal
 theme.taglist_fg_focus = theme.primary
-theme.border_width = 1
+theme.border_width = 2
+theme.wibox_spacing_left  = 6
+theme.wibox_spacing_right  = 10
 theme.wibox_border_width  = 0
 theme.widget_border_width = 0
 theme.border_normal       = theme.midgray_1
-theme.border_focus        = theme.primary
+theme.border_focus        = theme.primary_muted
 theme.border_marked       = theme.secondary
 theme.gray                = theme.fg_normal
 -- theme.border_normal = nil
 -- theme.border_focus = nil
 -- theme.border_marked = nil
-theme.wallpaper           = theme.confdir .. "/wallpapers/land.jpg"
+theme.wallpaper           = theme.confdir .. "/wallpapers/marcelo-cidrack-HME4dq3FCeI-unsplash.jpg"
 -- theme.bg_normal = nil
 -- theme.fg_normal = nil
 -- theme.bg_systray = nil
-theme.font        = "Inconsolata 9"
+theme.font        = "Inconsolata 10"
 theme.font_small  = "Ubuntu Mono 9"
 
 -- arcchart
@@ -141,7 +130,7 @@ theme.font_small  = "Ubuntu Mono 9"
 -- theme.hotkeys_group_margin = nil
 
 -- icon
--- theme.icon_theme = nil
+theme.icon_theme = nil
 
 -- layout
 -- theme.layout_cornernw = nil
@@ -269,11 +258,9 @@ end
 -- theme.snapper_gap = nil
 
 -- systray
--- theme.systray_icon_spacing = nil
+theme.systray_icon_spacing = 2
 
 -- taglist
--- theme.taglist_fg_focus = nil
--- theme.taglist_bg_focus = nil
 -- theme.taglist_fg_urgent = nil
 -- theme.taglist_bg_urgent = nil
 -- theme.taglist_bg_occupied = nil
@@ -287,10 +274,11 @@ theme.taglist_squares_unsel      = theme.confdir .. "/icons/square_b.svg"
 -- theme.taglist_squares_sel_empty = nil
 -- theme.taglist_squares_unsel_empty = nil
 -- theme.taglist_squares_resize = nil
--- theme.taglist_disable_icon = nil
+theme.taglist_disable_icon = nil
 theme.taglist_font = theme.font
 theme.taglist_spacing     = 2
--- theme.taglist_shape = nil
+theme.taglist_shape = octogon
+theme.taglist_fg_focus = theme.primary
 -- theme.taglist_shape_border_width = nil
 -- theme.taglist_shape_border_color = nil
 -- theme.taglist_shape_empty = nil
@@ -308,7 +296,6 @@ theme.taglist_spacing     = 2
 
 -- tasklist
 -- theme.tasklist_fg_normal = nil
--- theme.tasklist_bg_normal = nil
 -- theme.tasklist_fg_focus = nil
 -- theme.tasklist_bg_focus = nil
 -- theme.tasklist_fg_urgent = nil
@@ -320,17 +307,17 @@ theme.taglist_spacing     = 2
 -- theme.tasklist_bg_image_urgent = nil
 -- theme.tasklist_bg_image_minimize = nil
 theme.tasklist_disable_icon = true
--- theme.tasklist_disable_task_name = nil
--- theme.tasklist_plain_task_name = nil
-theme.tasklist_font       = theme.font_small
-theme.tasklist_align = "center"
+-- theme.tasklist_disable_task_name = true
+theme.tasklist_plain_task_name = true
+theme.tasklist_font = theme.font_small
+theme.tasklist_align = "left"
+theme.tasklist_shape = octogon
+theme.tasklist_shape_border_width = 0
+theme.tasklist_shape_border_color = theme.tranasparent
 -- theme.tasklist_font_focus = nil
 -- theme.tasklist_font_minimized = nil
 -- theme.tasklist_font_urgent = nil
--- theme.tasklist_spacing = nil
--- theme.tasklist_shape = nil
--- theme.tasklist_shape_border_width = nil
--- theme.tasklist_shape_border_color = nil
+theme.tasklist_spacing = 4
 -- theme.tasklist_shape_focus = nil
 -- theme.tasklist_shape_border_width_focus = nil
 -- theme.tasklist_shape_border_color_focus = nil
@@ -432,18 +419,18 @@ theme.tasklist_align = "center"
 
 -- wibar
 -- theme.wibar_stretch = nil
--- theme.wibar_border_width = nil
--- theme.wibar_border_color = nil
+theme.wibar_border_width = 0
+theme.wibar_border_color = theme.tranasparent
+theme.wibar_bg = theme.opaque_black
 -- theme.wibar_ontop = nil
 -- theme.wibar_cursor = nil
 -- theme.wibar_opacity = nil
 -- theme.wibar_type = nil
 -- theme.wibar_width = nil
-theme.wibar_height        = 16
--- theme.wibar_bg = nil
+theme.wibar_height        = 18
 -- theme.wibar_bgimage = nil
 -- theme.wibar_fg = nil
--- theme.wibar_shape = nil
+theme.wibar_shape = octogon
 
 return theme
 

@@ -7,7 +7,7 @@ if [ "$LVL" -gt "101" ] ; then
 fi
 
 if [ "$STS" = "off" ] ; then
-    echo $LVL"M"
+    echo "v $LVLM"
 else
-    echo $LVL"%"
+    echo "v $LVL%"
 fi

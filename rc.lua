@@ -71,6 +71,7 @@ end
 -- run_once("konsole -e zsh")
 run_once("alacritty")
 
+
 -- Table of layouts to cover with awful.layout.inc, order matters.
 awful.layout.layouts =
 	{
@@ -79,9 +80,6 @@ awful.layout.layouts =
 		awful.layout.suit.tile.top,
 		awful.layout.suit.fair
 	}
-
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -131,58 +129,60 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+
 -- Widgets {{{
-local function wrap_widget(
-target_widget,
-	target_bg,
-	target_fg,
-	margin_left,
-	margin_right
-)
-	local wrapped_inner = wibox.container.margin()
-	wrapped_inner:set_right(margin_right)
-	wrapped_inner:set_left(margin_left)
-	wrapped_inner:set_widget(target_widget)
-
-	local wrapped_widget = wibox.container.background()
-	wrapped_widget:set_widget(wrapped_inner)
-	wrapped_widget:set_bg(target_bg)
-	wrapped_widget:set_fg(target_fg)
-
-	return wrapped_widget
+local function octogon(cr, width, height)
+  gears.shape.octogon(cr, width, height, 5)
 end
 
-local function read_pipe(cmd)
-	local f = assert(io.popen(cmd))
-	local output = f:read("*all")
-	f:close()
 
-	return output
+local function wrap_widget (wid, bg, fg)
+  local wrapped_widget = wibox.widget {
+    {
+      wid,
+      top = 4,
+      bottom = 4,
+      left = beautiful.wibox_spacing_left,
+      right = beautiful.wibox_spacing_right,
+      widget = wibox.container.margin
+    },
+    shape = octogon,
+    shape_clip = true,
+    bg = bg,
+    fg = fg,
+    widget = wibox.container.background,
+  }
+  return wrapped_widget
 end
 
-local function wrap_arrow(image)
-	local wrapped_icon = wibox.container.margin()
-	wrapped_icon:set_widget(wibox.widget.imagebox(image))
-	wrapped_icon:set_margins(-1)
+local tray_widget    = wrap_widget({ widget = wibox.widget.systray }, beautiful.bg_normal, beautiful.fg_normal)
+local ip_widget      = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "iploc", 5), beautiful.bg_normal, beautiful.fg_muted)
+local memory_widget  = wrap_widget(awful.widget.watch("zsh -c 'print ${$(free --mega)[9]}'", 5), beautiful.midgray_0, beautiful.fg_normal)
+local cpu_widget     = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "cpu", 5), beautiful.midgray_0, beautiful.primary)
+local volume_widget  = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "volp", 10), beautiful.midgray_1, beautiful.fg_normal)
+local battery_widget = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "pwrp", 30), beautiful.midgray_0, beautiful.primary)
+local date_widget    = wrap_widget(wibox.widget.textclock("<span>" .. tostring("%d-%a") .. "</span>", 60), beautiful.midgray_1, beautiful.fg_normal)
+local clock_widget   = wrap_widget(wibox.widget.textclock("<span>" .. tostring("%H:%M:%S") .. "</span>", 1), beautiful.primary, beautiful.black)
 
-	return wrapped_icon
-end
+local right_side = wibox.widget {
+  tray_widget,
+  ip_widget,
+  memory_widget,
+  cpu_widget,
+  volume_widget,
+  battery_widget,
+  date_widget,
+  clock_widget,
+  spacing = -6,
+  layout = wibox.layout.fixed.horizontal
+}
 
--- arrows {{{
-local arrow_0L0 = wrap_arrow(beautiful.arrow_0L0)
-local arrow_0L1 = wrap_arrow(beautiful.arrow_0L1)
-local arrow_1L2 = wrap_arrow(beautiful.arrow_1L2)
-local arrow_2L1 = wrap_arrow(beautiful.arrow_2L1)
-local arrow_2L3 = wrap_arrow(beautiful.arrow_2L3)
-local arrow_0R0 = wrap_arrow(beautiful.arrow_0R0)
-local arrow_1R0 = wrap_arrow(beautiful.arrow_1R0)
--- }}}
 
 awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
 
 	awful.tag(
-		{ "1", "2", "3", "4", "5", "6", "7", "8", "9" },
+		{ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " },
 		s,
 		{
 			awful.layout.layouts[3],
@@ -228,21 +228,14 @@ awful.screen.connect_for_each_screen(function(s)
 	end
 
 	s.mypromptbox = awful.widget.prompt()
-
-	s.promptbox_wrap = wrap_widget(s.mypromptbox, beautiful.bg_normal, beautiful.fg_normal, 4, 1)
-
-	s.mytaglist = awful.widget.taglist{
-		screen = s,
-		filter = awful.widget.taglist.filter.all,
-		buttons = taglist_buttons
-	}
-
-	s.taglist_wrap =
-		wrap_widget(s.mytaglist, beautiful.midgray_0, beautiful.fg_normal, 1, 6)
+	s.mytaglist = awful.widget.taglist { filter = awful.widget.taglist.filter.all
+                                     , screen = s
+                                     , buttons = taglist_buttons
+                                     }
 
 	s.mytasklist = awful.widget.tasklist{
 		screen = s,
-		filter = awful.widget.tasklist.filter.currenttags,
+		filter = awful.widget.tasklist.filter.minimizedcurrenttags,
 		buttons = tasklist_buttons
 	}
 
@@ -252,156 +245,27 @@ awful.screen.connect_for_each_screen(function(s)
 		height = beautiful.wibar_height
 	})
 
-	s.mywibox:setup{
-		layout = wibox.layout.align.horizontal,
-		{
-			layout = wibox.layout.fixed.horizontal,
-			s.taglist_wrap,
-			arrow_1R0,
-			s.promptbox_wrap,
-			arrow_0R0
-		},
-		s.mytasklist,
-		{
-			layout = wibox.layout.fixed.horizontal,
-			wibox.widget.systray(),
-			arrow_0L0,
-			{
-				{
-					awful.widget.watch(
-						"zsh -c " .. scripts_path .. "iploc",
-						10
-					),
-					bg = beautiful.bg_normal,
-					fg = beautiful.fg_muted,
-					widget = wibox.container.background
-				},
-				left = 2,
-				right = 2,
-				widget = wibox.container.margin
-			},
-			arrow_0L1,
-			{
-				{
-					awful.widget.watch(
-						"zsh -c 'print ${$(free --mega)[9]}'",
-						10
-					),
-					left = 2,
-					right = 2,
-					widget = wibox.container.margin
-				},
-				bg = beautiful.midgray_0,
-				fg = beautiful.fg_normal,
-				widget = wibox.container.background
-			},
-			{
-				{
-					layout = wibox.layout.align.horizontal,
-					{
-						text = ":",
-						widget = wibox.widget.textbox
-					},
-					{
-						awful.widget.watch(
-							"zsh -c " .. scripts_path .. "cpu",
-							5
-						),
-						left = 2,
-						right = 4,
-						widget = wibox.container.margin
-					}
-				},
-				bg = beautiful.midgray_0,
-				fg = beautiful.primary,
-				widget = wibox.container.background
-			},
-			arrow_1L2,
-			{
-				{
-					layout = wibox.layout.align.horizontal,
-					{
-						{
-							text = "v",
-							widget = wibox.widget.textbox
-						},
-						left = 2,
-						right = 1,
-						widget = wibox.container.margin
-					},
-					{
-						awful.widget.watch(
-							"zsh -c " .. scripts_path .. "volp",
-							60
-						),
-						left = 1,
-						right = 4,
-						widget = wibox.container.margin
-					}
-				},
-				bg = beautiful.midgray_1,
-				fg = beautiful.fg_normal,
-				widget = wibox.container.background
-			},
-			arrow_2L1,
-			{
-				{
-					layout = wibox.layout.align.horizontal,
-					{
-						{
-							text = "b",
-							widget = wibox.widget.textbox
-						},
-						left = 4,
-						right = 1,
-						widget = wibox.container.margin
-					},
-					{
-						awful.widget.watch(
-							"zsh -c " .. scripts_path .. "pwrp",
-							30
-						),
-						left = 1,
-						right = 4,
-						widget = wibox.container.margin
-					}
-				},
-				bg = beautiful.midgray_0,
-				fg = beautiful.primary,
-				widget = wibox.container.background
-			},
-			arrow_1L2,
-			{
-				{
-					wibox.widget.textclock(
-						"<span>" .. tostring("%d-%a") .. "</span>",
-						100
-					),
-					left = 3,
-					right = 2,
-					widget = wibox.container.margin
-				},
-				bg = beautiful.midgray_1,
-				fg = beautiful.fg_normal,
-				widget = wibox.container.background
-			},
-			arrow_2L3,
-			{
-				{
-					wibox.widget.textclock(
-						"<span>" .. tostring("%H:%M") .. "</span>",
-						10
-					),
-					left = 2,
-					right = 5,
-					widget = wibox.container.margin
-				},
-				bg = beautiful.primary,
-				fg = beautiful.black,
-				widget = wibox.container.background
-			}
-		},
-	}
+
+
+
+
+
+
+	s.mywibox:setup {
+    {
+      {
+        s.mytaglist,
+        s.mypromptbox,
+        layout = wibox.layout.fixed.horizontal
+      },
+      nil,
+      s.mytasklist,
+      layout = wibox.layout.align.horizontal
+    },
+    nil,
+    right_side,
+    layout = wibox.layout.align.horizontal
+  }
 end)
 -- }}}
 
@@ -1066,6 +930,11 @@ client.connect_signal("manage", function(c)
 	if not awesome.startup then
 		awful.client.setslave(c)
 	end
+
+  -- cut corners
+  c.shape = function(cr, width, height)
+    gears.shape.octogon(cr, width, height, 6)
+  end
 
 	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
 		-- Prevent clients from being unreachable after screen count changes.
