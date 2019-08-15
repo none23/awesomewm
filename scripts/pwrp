@@ -1,6 +1,6 @@
 #!/bin/zsh
 
 local BAT=(/sys/class/power_supply/BAT*)
-echo "↯$(cat $BAT/capacity)%"
+echo "↯_$(cat $BAT/capacity)%"
 
 
