@@ -611,7 +611,7 @@ globalkeys = awful.util.table.join(
 		awful.spawn("chromium")
 	end),
 	awful.key({ Hyper, Ctrl }, "1", function()
-		awful.spawn("tor-browser-en")
+		awful.spawn("tor-browser")
 	end),
 	awful.key({ Hyper }, "2", function()
 		awful.spawn("firefox")
