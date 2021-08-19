@@ -7,9 +7,9 @@ if [ "$LVL" -gt "101" ] ; then
 fi
 
 if [ "$STS" = "off" ] ; then
-    echo "♪_$LVLM"
+    echo "♪ $LVLM"
 else
-    echo "♪_$LVL%"
+    echo "♪ $LVL%"
 fi
 
 

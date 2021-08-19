@@ -70,6 +70,8 @@ end
 
 -- run_once("konsole -e zsh")
 run_once("alacritty")
+run_once("keepassxc")
+run_once("brave")
 
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
@@ -105,6 +107,51 @@ local taglist_buttons = gears.table.join(
 	end)
 )
 
+local function set_wallpaper(s)
+	if beautiful.wallpaper then
+		local wallpaper = beautiful.wallpaper
+		gears.wallpaper.maximized(wallpaper, s, true)
+	end
+end
+
+-- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
+screen.connect_signal("property::geometry", set_wallpaper)
+
+
+-- Widgets {{{
+local function default_shape(cr, width, height)
+  gears.shape.rectangle(cr, width, height)
+end
+
+
+local function wrap_widget (wid, bg, fg)
+  local wrapped_widget = wibox.widget {
+    {
+      wid,
+      top = 4,
+      bottom = 4,
+      left = beautiful.wibox_spacing_left,
+      right = beautiful.wibox_spacing_right,
+      widget = wibox.container.margin
+    },
+    shape = default_shape,
+    shape_clip = true,
+    bg = bg,
+    fg = fg,
+    widget = wibox.container.background,
+  }
+  return wrapped_widget
+end
+
+local tray_widget    = wrap_widget({ widget = wibox.widget.systray }, beautiful.bg_normal, beautiful.fg_normal)
+local ip_widget      = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "iploc", 5), beautiful.bg_normal, beautiful.fg_muted)
+local memory_widget  = wrap_widget(awful.widget.watch("zsh -c 'print ${$(free --mega)[9]}'", 5), beautiful.bg_normal, beautiful.fg_normal)
+local cpu_widget     = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "cpu", 5), beautiful.bg_normal, beautiful.primary)
+local volume_widget  = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "volp", 10), beautiful.bg_normal, beautiful.fg_normal)
+local battery_widget = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "pwrp", 30), beautiful.bg_normal, beautiful.primary)
+local clock_widget   = wrap_widget(wibox.widget.textclock("<span>" .. tostring("%H:%M:%S") .. "</span>", 1), beautiful.bg_normal, beautiful.fg_normal)
+
+
 local tasklist_buttons = gears.table.join(
 	awful.button({}, 1, function(c)
 		if c == client.focus then
@@ -119,67 +166,13 @@ local tasklist_buttons = gears.table.join(
 	end)
 )
 
-local function set_wallpaper(s)
-	if beautiful.wallpaper then
-		local wallpaper = beautiful.wallpaper
-		gears.wallpaper.maximized(wallpaper, s, true)
-	end
-end
 
--- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
-screen.connect_signal("property::geometry", set_wallpaper)
-
-
--- Widgets {{{
-local function octogon(cr, width, height)
-  gears.shape.octogon(cr, width, height, 5)
-end
-
-
-local function wrap_widget (wid, bg, fg)
-  local wrapped_widget = wibox.widget {
-    {
-      wid,
-      top = 4,
-      bottom = 4,
-      left = beautiful.wibox_spacing_left,
-      right = beautiful.wibox_spacing_right,
-      widget = wibox.container.margin
-    },
-    shape = octogon,
-    shape_clip = true,
-    bg = bg,
-    fg = fg,
-    widget = wibox.container.background,
-  }
-  return wrapped_widget
-end
-
-local tray_widget    = wrap_widget({ widget = wibox.widget.systray }, beautiful.bg_normal, beautiful.fg_normal)
-local ip_widget      = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "iploc", 5), beautiful.bg_normal, beautiful.fg_muted)
-local memory_widget  = wrap_widget(awful.widget.watch("zsh -c 'print ${$(free --mega)[9]}'", 5), beautiful.midgray_0, beautiful.fg_normal)
-local cpu_widget     = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "cpu", 5), beautiful.midgray_0, beautiful.primary)
-local volume_widget  = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "volp", 10), beautiful.midgray_1, beautiful.fg_normal)
-local battery_widget = wrap_widget(awful.widget.watch("zsh -c " .. scripts_path .. "pwrp", 30), beautiful.midgray_0, beautiful.primary)
-local date_widget    = wrap_widget(wibox.widget.textclock("<span>" .. tostring("%d-%a") .. "</span>", 60), beautiful.midgray_1, beautiful.fg_normal)
-local clock_widget   = wrap_widget(wibox.widget.textclock("<span>" .. tostring("%H:%M:%S") .. "</span>", 1), beautiful.primary, beautiful.black)
-
-local right_side = wibox.widget {
-  tray_widget,
-  ip_widget,
-  memory_widget,
-  cpu_widget,
-  volume_widget,
-  battery_widget,
-  date_widget,
-  clock_widget,
-  spacing = -6,
-  layout = wibox.layout.fixed.horizontal
-}
 
 
 awful.screen.connect_for_each_screen(function(s)
 	set_wallpaper(s)
+
+
 
 	awful.tag(
 		{ " 1 ", " 2 ", " 3 ", " 4 ", " 5 ", " 6 ", " 7 ", " 8 ", " 9 " },
@@ -228,10 +221,11 @@ awful.screen.connect_for_each_screen(function(s)
 	end
 
 	s.mypromptbox = awful.widget.prompt()
-	s.mytaglist = awful.widget.taglist { filter = awful.widget.taglist.filter.all
-                                     , screen = s
-                                     , buttons = taglist_buttons
-                                     }
+	s.mytaglist = awful.widget.taglist {
+    filter = awful.widget.taglist.filter.all,
+    screen = s,
+    buttons = taglist_buttons
+  }
 
 	s.mytasklist = awful.widget.tasklist{
 		screen = s,
@@ -245,7 +239,25 @@ awful.screen.connect_for_each_screen(function(s)
 		height = beautiful.wibar_height
 	})
 
+s.date_widget    = wrap_widget(wibox.widget.textclock("<span>" .. tostring("%d-%a") .. "</span>", 60), beautiful.bg_normal, beautiful.primary)
+s.right_side = wibox.widget {
+  tray_widget,
+  ip_widget,
+  memory_widget,
+  cpu_widget,
+  volume_widget,
+  -- battery_widget, -- TODO: only disable when no battery present (i.e. on desktop)
+  s.date_widget,
+  clock_widget,
+  spacing = -4,
+  layout = wibox.layout.fixed.horizontal
+}
 
+  s.month_calendar = awful.widget.calendar_popup.month()
+  s.month_calendar.shape = default_shape
+  s.month_calendar.screen = s
+
+  s.month_calendar:attach(s.date_widget, 'tr' )
 
 
 
@@ -263,7 +275,7 @@ awful.screen.connect_for_each_screen(function(s)
       layout = wibox.layout.align.horizontal
     },
     nil,
-    right_side,
+    s.right_side,
     layout = wibox.layout.align.horizontal
   }
 end)
@@ -608,7 +620,7 @@ globalkeys = awful.util.table.join(
 		}
 	),
 	awful.key({ Hyper }, "1", function()
-		awful.spawn("chromium")
+		awful.spawn("brave")
 	end),
 	awful.key({ Hyper, Ctrl }, "1", function()
 		awful.spawn("tor-browser")
@@ -617,7 +629,7 @@ globalkeys = awful.util.table.join(
 		awful.spawn("firefox")
 	end),
 	awful.key({ Hyper, Ctrl }, "2", function()
-		awful.spawn("chromium --kiosk")
+		awful.spawn("brave --kiosk")
 	end),
 	awful.key({ Hyper }, "3", function()
 		awful.spawn("atom")
@@ -642,6 +654,9 @@ globalkeys = awful.util.table.join(
 	end),
 	awful.key({ Hyper, Ctrl }, "9", function()
 		awful.spawn("transset-df .4")
+	end),
+	awful.key({ Hyper }, "r", function()
+		awful.spawn("peek")
 	end),
 	awful.key(
 		{ Super },
@@ -854,7 +869,7 @@ awful.rules.rules = {
   },
 
   {
-    rule_any = { class = { "Chromium" } },
+    rule_any = { class = { "brave" } },
     properties = {
       floating = false,
       maximized_horizontal = false,
@@ -902,6 +917,15 @@ awful.rules.rules = {
 
   {
     rule = {
+      class = "peek"
+    },
+    properties = {
+      border_width = beautiful.thick_border_width,
+    },
+  },
+
+  {
+    rule = {
       name = "Picture in picture"
     },
     properties = {
@@ -931,10 +955,7 @@ client.connect_signal("manage", function(c)
 		awful.client.setslave(c)
 	end
 
-  -- cut corners
-  c.shape = function(cr, width, height)
-    gears.shape.octogon(cr, width, height, 6)
-  end
+  c.shape = default_shape
 
 	if awesome.startup and not c.size_hints.user_position and not c.size_hints.program_position then
 		-- Prevent clients from being unreachable after screen count changes.
