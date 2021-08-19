@@ -47,8 +47,8 @@ theme.menu_fg_focus    = theme.primary
 theme.fg_minimize      = theme.fg_normal
 theme.taglist_fg_focus = theme.primary
 theme.border_width = 2
-theme.wibox_spacing_left  = 8
-theme.wibox_spacing_right  = 8
+theme.wibox_spacing_left  = 12
+theme.wibox_spacing_right  = 4
 theme.wibox_border_width  = 0
 theme.widget_border_width = 0
 theme.border_normal       = theme.midgray_1
@@ -82,6 +82,7 @@ theme.font_small  = "Ubuntu Mono 9"
 -- theme.calendar_week_numbers = nil
 -- theme.calendar_start_sunday = nil
 -- theme.calendar_long_weekdays = nil
+
 
 -- checkbox
 -- theme.checkbox_border_width = nil
@@ -430,7 +431,7 @@ theme.wibar_bg = theme.opaque_black
 theme.wibar_height        = 18
 -- theme.wibar_bgimage = nil
 -- theme.wibar_fg = nil
-theme.wibar_shape = octogon
+-- theme.wibar_shape = squircle
 
 return theme
 
